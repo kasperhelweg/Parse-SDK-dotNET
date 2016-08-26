@@ -28,10 +28,13 @@ namespace Parse {
     [SerializeField]
     public string dotnetKey;
 
-    /// <summary>
-    /// Initializes the Parse SDK and begins running network requests created by Parse.
-    /// </summary>
-    public virtual void Awake() {
+    [SerializeField]        
+    public string server;
+
+        /// <summary>
+        /// Initializes the Parse SDK and begins running network requests created by Parse.
+        /// </summary>
+        public virtual void Awake() {
       Initialize();
       // Force the name to be `ParseInitializeBehaviour` in runtime.
       gameObject.name = "ParseInitializeBehaviour";
@@ -66,7 +69,12 @@ namespace Parse {
         // Keep this gameObject around, even when the scene changes.
         GameObject.DontDestroyOnLoad(gameObject);
 
-        ParseClient.Initialize(applicationID, dotnetKey);
+        ParseClient.Initialize(new ParseClient.Configuration
+        {
+            ApplicationId = applicationID,
+            WindowsKey    = dotnetKey,
+            Server        = string.IsNullOrEmpty(server) ? null : server
+        });
 
         // Kick off the dispatcher.
         StartCoroutine(PlatformHooks.RunDispatcher());
